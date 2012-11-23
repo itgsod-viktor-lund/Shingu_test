@@ -5,6 +5,7 @@ class Game < Chingu::Window
 	# Constructor
 	def initialize
 		super 640, 480
+		self.caption = "Into Space"
 		self.input = {esc: :exit}
 		@background_image = Background.create
 		@player = Player.create
@@ -20,11 +21,11 @@ class Background < Chingu::GameObject
 end
 
 class Player < Chingu::GameObject
-	
+	has_traits :velocity
 	# meta-constructor
 	def setup
 		@x, @y = 350, 400
-		@speed = 5
+	#	@speed = 5
 		@angle = 0
 		@image = Gosu::Image["ship.png"]
 		self.input = {
@@ -32,8 +33,15 @@ class Player < Chingu::GameObject
 			holding_right: :right,
 			holding_up: :up,
 			holding_down: :down,
-			holding_space: :fire
+			space: :fire
 		}
+	end
+
+	def update
+		@x %= 640
+		@y %= 480
+		self.velocity_x *= 0.92
+		self.velocity_y *= 0.92
 	end
 
 	def left
@@ -49,15 +57,15 @@ class Player < Chingu::GameObject
 	end
 
 	def up
-		unless @y - image.width/2 <= 0
-			@y -= @speed
-		end
+		self.velocity_x += Gosu::offset_x(@angle, 0.5)
+		self.velocity_y += Gosu::offset_y(@angle, 0.5)
 	end
 
 	def down
-		unless @y + width/2 >= 480
-			@y += @speed
-		end
+		self.velocity_x -= Gosu::offset_x(@angle, 0.5)
+		self.velocity_y -= Gosu::offset_y(@angle, 0.5)
+		self.velocity_x *= 0.80
+		self.velocity_y *= 0.80
 	end
 
 	def fire
@@ -66,12 +74,13 @@ class Player < Chingu::GameObject
 end
 
 class Laser < Chingu::GameObject
-	has_traits :velocity
+	has_traits :velocity, :timer
 
 	def setup
 		@image = Gosu::Image["lazer.png"]
-		self.velocity_y = Gosu::offset_y(angle, 15)
-		self.velocity_x = Gosu::offset_x(angle, 15)
+		self.velocity_y = Gosu::offset_y(angle, 10)
+		self.velocity_x = Gosu::offset_x(angle, 10)
+		after(1000) {self.destroy}
 	end
 end
 
