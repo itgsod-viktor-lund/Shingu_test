@@ -9,6 +9,7 @@ class Game < Chingu::Window
 		self.input = {esc: :exit}
 		@background_image = Background.create
 		@player = Player.create
+		@asteroid = Asteroide.create
 	end
 end
 
@@ -22,12 +23,13 @@ end
 
 class Player < Chingu::GameObject
 	has_traits :velocity
+
 	# meta-constructor
 	def setup
-		@x, @y = 350, 400
-	#	@speed = 5
+		@x, @y = 640/2, 480/2
 		@angle = 0
 		@image = Gosu::Image["ship.png"]
+		
 		self.input = {
 			holding_left: :left,
 			holding_right: :right,
@@ -81,6 +83,28 @@ class Laser < Chingu::GameObject
 		self.velocity_y = Gosu::offset_y(angle, 10)
 		self.velocity_x = Gosu::offset_x(angle, 10)
 		after(1000) {self.destroy}
+	end
+end
+
+class Asteroide < Chingu::GameObject
+	has_traits :velocity
+
+
+	def setup
+		@x, @y = 100, 100
+		@image = Gosu::Image["asteroid.png"]
+
+		#@speed = [1,2,3]
+
+		#@speed_rand = rand(speed.size)
+
+		self.velocity_y = Gosu::offset_y(angle, 2 )#@speed_rand)
+		self.velocity_x = Gosu::offset_x(angle, 2 )#@speed_rand)
+	end
+
+	def update
+		@x %= 640
+		@y %= 480
 	end
 end
 
