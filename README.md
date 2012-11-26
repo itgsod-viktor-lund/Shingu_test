@@ -1,20 +1,23 @@
-Det här är ett spel som jag har ghort för att lära mig använda "Chingu".
+#Into Space
 
-##Detta finns i spelet
+Det här är ett spel som jag har gjort för att lära mig använda "Chingu".
+
+###Detta finns i spelet
 
 + En spelare
 + En bakgrund
 + En segerbild
 + Rörande asteroider
++ Laserskott
 
 
-##Vad jag har lärt mig?
+###Vad jag har lärt mig?
 
 + Hur man lägger in bilder med Chingu
 + Hur man gör en collision detection
 + Hur man byter bakgrundsbild --> Användes när jag gjorde segerbilden
 
-##Vad kan man göra?
+###Vad kan man göra?
 
 Spelet går ut på att man ska skuta sönder alla asteroider (10st).
 

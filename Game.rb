@@ -1,5 +1,6 @@
 require 'Chingu'
 
+# Creating the game window
 class Game < Chingu::Window
 
 	# Constructor
@@ -22,7 +23,6 @@ class Game < Chingu::Window
       		laser.destroy
       		asteroide.destroy
     	end
-		
 		if @index == 0
 			@background_image.destroy
 			@background_image = Victory.create		
@@ -30,6 +30,7 @@ class Game < Chingu::Window
 	end
 end
 
+# Creating the background
 class Background < Chingu::GameObject
 	
 	def setup
@@ -39,6 +40,7 @@ class Background < Chingu::GameObject
 	end
 end
 
+# Creating the victory image
 class Victory < Chingu::GameObject
 
 	def setup
@@ -49,6 +51,7 @@ class Victory < Chingu::GameObject
 	end
 end
 
+# Creating the player
 class Player < Chingu::GameObject
 	has_traits :velocity
 
@@ -76,13 +79,13 @@ class Player < Chingu::GameObject
 
 	def left
 		unless @x - image.width/2 <= 0
-			@angle -= 4
+			@angle -= 5
 		end
 	end
 
 	def right
 		unless @x + image.width/2 >=800
-			@angle += 4
+			@angle += 5
 		end
 	end
 
@@ -106,17 +109,19 @@ class Player < Chingu::GameObject
 	end
 end
 
+# Creating the laser shot
 class Laser < Chingu::GameObject
 	has_traits :velocity, :timer, :collision_detection, :bounding_circle
 
 	def setup
 		@image = Gosu::Image["lazer.png"]
-		self.velocity_y = Gosu::offset_y(angle, 10)
-		self.velocity_x = Gosu::offset_x(angle, 10)
+		self.velocity_y = Gosu::offset_y(angle, 15)
+		self.velocity_x = Gosu::offset_x(angle, 15)
 		after(2500) {self.destroy}
 	end
 end
 
+# Creating the asteroides
 class Asteroide < Chingu::GameObject
 	has_traits :velocity, :collision_detection, :bounding_circle
 
@@ -138,4 +143,5 @@ class Asteroide < Chingu::GameObject
 	end
 end
 
+# Starts the game
 Game.new.show
