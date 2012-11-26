@@ -9,15 +9,39 @@ class Game < Chingu::Window
 		self.input = {esc: :exit}
 		@background_image = Background.create
 		@player = Player.create
-		@asteroid = Asteroide.create
+		@asteroide = []
+		10.times {@asteroide << Asteroide.create}
+
+		if @asteroide == 0
+			Victory.create
+		end
 	end
+
+	def update
+		super
+		Laser.each_bounding_circle_collision(Asteroide) do |laser, asteroide|
+      		laser.destroy
+      		asteroide.destroy
+    	end
+	end
+
 end
 
 class Background < Chingu::GameObject
+	
 	def setup
 		@x = 640/2
 		@y = 480/2
 		@image = Gosu::Image["galaxy.jpg"]
+	end
+end
+
+class Victory
+
+	def setup
+		@x = 640/2
+		@y = 480/2
+		@image = Gosu::Image["victory.jpg"]
 	end
 end
 
@@ -42,8 +66,8 @@ class Player < Chingu::GameObject
 	def update
 		@x %= 640
 		@y %= 480
-		self.velocity_x *= 0.92
-		self.velocity_y *= 0.92
+		self.velocity_x *= 0.98
+		self.velocity_y *= 0.98
 	end
 
 	def left
@@ -61,6 +85,9 @@ class Player < Chingu::GameObject
 	def up
 		self.velocity_x += Gosu::offset_x(@angle, 0.5)
 		self.velocity_y += Gosu::offset_y(@angle, 0.5)
+
+		self.velocity_x *= 0.92
+		self.velocity_y *= 0.92
 	end
 
 	def down
@@ -76,30 +103,29 @@ class Player < Chingu::GameObject
 end
 
 class Laser < Chingu::GameObject
-	has_traits :velocity, :timer
+	has_traits :velocity, :timer, :collision_detection, :bounding_circle
 
 	def setup
 		@image = Gosu::Image["lazer.png"]
 		self.velocity_y = Gosu::offset_y(angle, 10)
 		self.velocity_x = Gosu::offset_x(angle, 10)
-		after(1000) {self.destroy}
+		after(2500) {self.destroy}
 	end
 end
 
 class Asteroide < Chingu::GameObject
-	has_traits :velocity
-
+	has_traits :velocity, :collision_detection, :bounding_circle
 
 	def setup
-		@x, @y = 100, 100
+		@x, @y = rand(640), rand(480)
+		angle = rand(360)
+		speed = rand(5)
+		self.factor = rand(3)
 		@image = Gosu::Image["asteroid.png"]
 
-		#@speed = [1,2,3]
 
-		#@speed_rand = rand(speed.size)
-
-		self.velocity_y = Gosu::offset_y(angle, 2 )#@speed_rand)
-		self.velocity_x = Gosu::offset_x(angle, 2 )#@speed_rand)
+		self.velocity_y = Gosu::offset_y(angle, speed)
+		self.velocity_x = Gosu::offset_x(angle, speed)
 	end
 
 	def update
