@@ -11,20 +11,23 @@ class Game < Chingu::Window
 		@player = Player.create
 		@asteroide = []
 		10.times {@asteroide << Asteroide.create}
-
-		if @asteroide == 0
-			Victory.create
-		end
+		@index = 10
+		
 	end
 
 	def update
 		super
 		Laser.each_bounding_circle_collision(Asteroide) do |laser, asteroide|
+      		@index -= 1
       		laser.destroy
       		asteroide.destroy
     	end
+		
+		if @index == 0
+			@background_image.destroy
+			@background_image = Victory.create		
+		end
 	end
-
 end
 
 class Background < Chingu::GameObject
@@ -36,12 +39,13 @@ class Background < Chingu::GameObject
 	end
 end
 
-class Victory
+class Victory < Chingu::GameObject
 
 	def setup
+		@zorder = 300
 		@x = 640/2
 		@y = 480/2
-		@image = Gosu::Image["victory.jpg"]
+		@image = Gosu::Image["victory.png"]
 	end
 end
 
@@ -119,8 +123,8 @@ class Asteroide < Chingu::GameObject
 	def setup
 		@x, @y = rand(640), rand(480)
 		angle = rand(360)
-		speed = rand(5)
-		self.factor = rand(3)
+		speed = rand(1...4)
+		self.factor = rand(1...3)
 		@image = Gosu::Image["asteroid.png"]
 
 
